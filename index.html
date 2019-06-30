@@ -1,0 +1,55 @@
+<html>
+<head>
+   <meta name="google-signin-client_id" content="345168571290-gic51upkjdn53q76arqe2fo18rec3n1s.apps.googleusercontent.com">
+</head>
+<body>
+  <button class="signin">Sign in</button>
+  <button class="signout btn-hide">Sign out</button>
+  <button class="btn-save-google">Save Google</button>
+  <div class="user-name"></div>
+  <img class="user-photo" src="" alt="">
+  <style>
+    .btn-hide {
+  display: none;
+}
+  </style>
+  <script>
+     const signInBtn = document.querySelector('.signin');
+     const signOutBtn = document.querySelector('.signout');
+     const userName = document.querySelector('.user-name');
+     const userPhoto = document.querySelector('.user-photo');
+     
+       function signIn () {
+        const auth2 = gapi.auth2.getAuthInstance()
+        auth2.signIn({ scope: 'https://www.googleapis.com/auth/drive' }).then(googleUser => {  
+           // метод возвращает объект пользователя, где есть все необходимые нам поля
+           const profile = googleUser.getBasicProfile();
+           userName.innerText = profile.getName();
+           userPhoto.src = profile.getImageUrl();
+           signInBtn.classList.add('btn-hide');
+           signOutBtn.classList.remove('btn-hide');
+    })
+  }   
+     signInBtn.addEventListener('click', signIn);
+     
+    function signOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function () {
+        userName.innerText = '';
+        userPhoto.src = '';
+        signInBtn.classList.remove('btn-hide');
+        signOutBtn.classList.add('btn-hide');
+      });
+    }
+     
+     signOutBtn.addEventListener('click', signOut);
+    function onLoad() {
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
+    }    
+
+  </script>
+  <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+</body>
+</html>
